@@ -1,0 +1,270 @@
+/* Simple, Modern, Dark Theme */
+:root {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --primary-color: #4a90e2; /* A pleasant blue */
+    --secondary-color: #333;
+    --border-color: #444;
+    --input-bg: #2a2a2a;
+    --input-text: #e0e0e0;
+    --error-color: #e74c3c;
+    --success-color: #2ecc71;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: var(--secondary-color);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+h1, h2, h3 {
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#loading {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #aaa;
+}
+
+.voice-item {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 6px;
+}
+
+.item-separator {
+    border: none;
+    height: 1px;
+    background-color: var(--border-color);
+    margin-top: 30px;
+}
+/* Hide the last separator */
+.voice-item:last-child .item-separator {
+    display: none;
+}
+
+
+.audio-player {
+    width: 100%;
+    margin-bottom: 20px;
+    filter: invert(0.9) hue-rotate(180deg); /* Simple dark theme for controls */
+}
+
+.transcription-section label,
+.rating-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #ccc;
+}
+
+.transcription-section .original-transcription {
+    background-color: var(--input-bg);
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    min-height: 40px; /* Ensure some height */
+    color: #bbb; /* Slightly dimmer for original */
+}
+
+textarea.edited-transcription {
+    width: calc(100% - 22px); /* Account for padding and border */
+    padding: 10px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    min-height: 60px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.rating-section h3 {
+    font-size: 1.1em;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    border: none;
+    padding: 0;
+}
+
+.rating-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.rating-group > label { /* Label for the group (Noise, Naturalness, etc.) */
+     margin-bottom: 8px;
+}
+
+.rating-options {
+    display: flex;
+    gap: 15px; /* Spacing between radio options */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.rating-options label { /* Label for individual radio button (1, 2, 3...) */
+    display: inline-flex; /* Align radio and text nicely */
+    align-items: center;
+    gap: 5px;
+    font-weight: normal;
+    color: var(--text-color);
+    cursor: pointer;
+    margin: 0; /* Reset margin */
+}
+
+input[type="radio"] {
+    cursor: pointer;
+     /* Optional: Style radio buttons */
+    accent-color: var(--primary-color); /* Modern way to color radios/checkboxes */
+}
+
+button#submit-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+button#submit-btn:hover {
+    background-color: #3a7bc8; /* Slightly darker blue on hover */
+}
+
+button#submit-btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+
+#submit-status {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+    min-height: 1.5em; /* Reserve space */
+}
+
+#submit-status.success {
+    color: var(--success-color);
+}
+
+#submit-status.error {
+    color: var(--error-color);
+}
+
+.section-separator {
+    border: none;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 40px 0; /* Add spacing */
+}
+
+
+.download-section h2 {
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    border-bottom: none; /* Remove border if desired for this header */
+    padding-bottom: 0;
+}
+
+.download-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Spacing between elements */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    margin-bottom: 10px;
+}
+
+.download-controls label {
+    font-weight: bold;
+    color: #ccc;
+    margin-bottom: 0; /* Reset margin */
+}
+
+.download-controls input[type="password"] {
+    padding: 8px 10px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.95em;
+    flex-grow: 1; /* Allow input to take available space */
+    min-width: 150px; /* Ensure minimum width */
+}
+
+.download-controls input[type="password"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+
+.download-controls button {
+    padding: 8px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.download-controls button:hover {
+    background-color: #3a7bc8;
+}
+
+#download-status {
+    margin-top: 10px;
+    font-weight: bold;
+    min-height: 1.2em; /* Reserve space */
+    text-align: left; /* Align with controls */
+}
+
+#download-status.success {
+    color: var(--success-color);
+}
+
+#download-status.error {
+    color: var(--error-color);
+}

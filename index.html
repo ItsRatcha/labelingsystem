@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Labeling Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Voice Labeling & Rating</h1>
+        <p>Listen to the voices, edit the transcriptions if needed, and rate them.</p>
+
+        <div id="loading">Loading voices...</div>
+
+        <form id="labeling-form">
+            <div id="voice-list">
+                <!-- Voice items will be loaded here by JavaScript -->
+            </div>
+            <button type="submit" id="submit-btn">Submit Ratings</button>
+            <div id="submit-status"></div>
+        </form>
+    </div>
+    <hr class="section-separator">
+
+    <!-- Database Download Section -->
+    <div class="download-section">
+        <h2>Download Database</h2>
+        <div class="download-controls">
+            <label for="download-password">Admin Password:</label>
+            <input type="password" id="download-password" placeholder="Enter password">
+            <!-- Ensure this button does NOT have type="submit" -->
+            <button id="download-db-btn" type="button">Download DB File</button>
+        </div>
+        <div id="download-status"></div> <!-- To show success/error messages -->
+    </div>
+    <!-- Template for a single voice item (hidden, used by JS) -->
+    <template id="voice-item-template">
+        <div class="voice-item" data-voice-id="">
+            <h2>Voice Sample</h2>
+            <audio controls src="" class="audio-player"></audio>
+
+            <div class="transcription-section">
+                <label>Original Transcription:</label>
+                <p class="original-transcription"></p>
+                <label for="edited-transcription">Edit Transcription:</label>
+                <textarea class="edited-transcription" rows="3"></textarea>
+            </div>
+
+            <div class="rating-section">
+                <h3>Rate this Voice (1=Worst, 5=Best)</h3>
+                <div class="rating-group">
+                    <label>Noise Level:</label>
+                    <div class="rating-options">
+                        <label><input type="radio" name="noise-rating" value="1" required> 1</label>
+                        <label><input type="radio" name="noise-rating" value="2"> 2</label>
+                        <label><input type="radio" name="noise-rating" value="3"> 3</label>
+                        <label><input type="radio" name="noise-rating" value="4"> 4</label>
+                        <label><input type="radio" name="noise-rating" value="5"> 5</label>
+                    </div>
+                </div>
+                <div class="rating-group">
+                    <label>Naturalness:</label>
+                    <div class="rating-options">
+                        <label><input type="radio" name="naturalness-rating" value="1" required> 1</label>
+                        <label><input type="radio" name="naturalness-rating" value="2"> 2</label>
+                        <label><input type="radio" name="naturalness-rating" value="3"> 3</label>
+                        <label><input type="radio" name="naturalness-rating" value="4"> 4</label>
+                        <label><input type="radio" name="naturalness-rating" value="5"> 5</label>
+                    </div>
+                </div>
+                <div class="rating-group">
+                    <label>Pronunciation:</label>
+                    <div class="rating-options">
+                        <label><input type="radio" name="pronunciation-rating" value="1" required> 1</label>
+                        <label><input type="radio" name="pronunciation-rating" value="2"> 2</label>
+                        <label><input type="radio" name="pronunciation-rating" value="3"> 3</label>
+                        <label><input type="radio" name="pronunciation-rating" value="4"> 4</label>
+                        <label><input type="radio" name="pronunciation-rating" value="5"> 5</label>
+                    </div>
+                </div>
+            </div>
+            <hr class="item-separator">
+            </div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>

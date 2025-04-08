@@ -1,0 +1,22 @@
+{
+  "name": "new-gemini",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@npmcli/fs": "^4.0.0",
+    "express": "^5.1.0",
+    "fs-extra": "^11.3.0",
+    "node-tar": "^1.0.0",
+    "sqlite3": "^5.1.7",
+    "tar": "^7.4.3",
+    "undici": "^7.7.0"
+  }
+}
