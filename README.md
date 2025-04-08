@@ -1,7 +1,6 @@
-> [!quote] Action is the foundational key to all success.
+> Action is the foundational key to all success.
 > — Pablo Picasso
 # LabelingSystem
----
 This is my personal and very beginner takes on Labeling System. This web app will allow user to edit and rank 5 random voices from [[mozilla-foundation/common_voice_17_0]] Dataset, specifically Th/Test data.
 *Built with Node.js and Vanilla HTML/CSS*
 
@@ -24,7 +23,7 @@ node extract_audio.js
 ```
 
 ## Usage
-First add you huggingface API to the terminal
+First, add your Huggingface API to the terminal
 cmd:
 ```
 set HF_TOKEN=MYTOKEN
