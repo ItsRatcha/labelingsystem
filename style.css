@@ -268,3 +268,88 @@ button#submit-btn:disabled {
 #download-status.error {
     color: var(--error-color);
 }
+
+.login-container {
+    max-width: 400px; /* Smaller container for login */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #ccc;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: calc(100% - 22px); /* Account for padding/border */
+    padding: 10px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+#login-btn { /* Style login button similar to submit */
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+#login-btn:hover {
+    background-color: #3a7bc8;
+}
+
+#login-status {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+    min-height: 1.5em; /* Reserve space */
+    /* .error class already defined for red color */
+}
+
+/* User Info / Logout */
+.user-info {
+    text-align: right;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+#logged-in-username {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+#logout-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0 5px;
+}
+#logout-btn:hover {
+    color: #a3c7f1;
+}

@@ -7,12 +7,30 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+        <!-- Login Section (Initially Visible) -->
+    <div id="login-section" class="container login-container">
+        <h1>Login</h1>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" id="login-btn">Login</button>
+            <div id="login-status" class="error"></div> <!-- For login errors -->
+        </form>
+    </div>
+
+    <div id="main-content" class="container" style="display: none;">
+        <div class="user-info"> <!-- Area to show logged in user & logout -->
+            Logged in as: <span id="logged-in-username"></span> | <button id="logout-btn" type="button">Logout</button>
+        </div>
         <h1>Voice Labeling & Rating</h1>
         <p>Listen to the voices, edit the transcriptions if needed, and rate them.</p>
-
         <div id="loading">Loading voices...</div>
-
         <form id="labeling-form">
             <div id="voice-list">
                 <!-- Voice items will be loaded here by JavaScript -->
@@ -20,9 +38,8 @@
             <button type="submit" id="submit-btn">Submit Ratings</button>
             <div id="submit-status"></div>
         </form>
-    </div>
-    <hr class="section-separator">
 
+        <hr class="section-separator">
     <!-- Database Download Section -->
     <div class="download-section">
         <h2>Download Database</h2>

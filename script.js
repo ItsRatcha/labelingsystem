@@ -1,19 +1,107 @@
 document.addEventListener('DOMContentLoaded', () => {
+        // Labeling Form Elements
     const voiceList = document.getElementById('voice-list');
     const loadingIndicator = document.getElementById('loading');
     const form = document.getElementById('labeling-form');
     const submitBtn = document.getElementById('submit-btn');
     const submitStatus = document.getElementById('submit-status');
     const voiceItemTemplate = document.getElementById('voice-item-template');
+
+        // Download Section Elements
     const downloadPasswordInput = document.getElementById('download-password');
     const downloadDbBtn = document.getElementById('download-db-btn');
     const downloadStatus = document.getElementById('download-status');
+
+        // Login Section
+    const loginSection = document.getElementById('login-section');
+    const loginForm = document.getElementById('login-form');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('login-btn');
+    const loginStatus = document.getElementById('login-status');
+
+        // Main Content Section
+    const mainContentSection = document.getElementById('main-content');
+    const loggedInUsernameSpan = document.getElementById('logged-in-username');
+    const logoutBtn = document.getElementById('logout-btn');
+
+
     // --- Configuration ---
     // Base URL for fetching audio files from Hugging Face dataset viewer
     // Adjust if the dataset path or repo changes.
     const AUDIO_BASE_URL = "public/audio/th/clips/";
 
+    let currentUser = null; // Track logged-in user ('admin' or null)
+    
+    const labelingForm = document.getElementById('labeling-form');
+
     // --- Functions ---
+    
+    function showLoginScreen() {
+        loginSection.style.display = 'block';
+        mainContentSection.style.display = 'none';
+        currentUser = null; // Clear user on showing login
+        loginStatus.textContent = ''; // Clear any previous login errors
+        usernameInput.value = ''; // Clear fields
+        passwordInput.value = '';
+    }
+
+    function showMainScreen(username) {
+        loginSection.style.display = 'none';
+        mainContentSection.style.display = 'block';
+        currentUser = username; // Set current user
+        loggedInUsernameSpan.textContent = username;
+        // Fetch initial voices only when showing main screen
+        fetchVoices();
+    }
+    async function handleLogin(event) {
+        event.preventDefault();
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+        loginStatus.textContent = ''; // Clear status
+        loginBtn.disabled = true;
+
+        if (!username || !password) {
+            loginStatus.textContent = 'Please enter username and password.';
+            loginBtn.disabled = false;
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Login successful
+                showMainScreen(result.username); // Show main content, pass username
+            } else {
+                // Login failed
+                loginStatus.textContent = result.message || 'Login failed.';
+            }
+        } catch (error) {
+            console.error("Login fetch error:", error);
+            loginStatus.textContent = 'Network error during login.';
+        } finally {
+            loginBtn.disabled = false;
+        }
+    }
+
+    // Logout Button Click
+    function handleLogout() {
+        console.log("Logging out...");
+        // Simply show the login screen, which clears the user state
+        showLoginScreen();
+        // Optionally clear voice list etc. if desired
+        voiceList.innerHTML = '';
+        submitStatus.textContent = '';
+        downloadStatus.textContent = '';
+    }
+
 
     // Function to fetch voices from the backend
     async function fetchVoices() {
@@ -46,10 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`fetchVoices: Starting loop iteration ${index + 1}, Voice ID: ${voice?.id}`); // Log: Loop iteration start
     
                 // Check if essential voice data exists
-                 if (!voice || typeof voice.id === 'undefined' || typeof voice.transcription === 'undefined') {
-                     console.error(`fetchVoices: Skipping iteration ${index + 1} due to missing data:`, voice);
+                if (!voice || typeof voice.id === 'undefined' || typeof voice.transcription === 'undefined') {
+                    console.error(`fetchVoices: Skipping iteration ${index + 1} due to missing data:`, voice);
                      return; // Skip this iteration
-                 }
+                }
     
     
                 console.log(`fetchVoices: Iteration ${index + 1}: Cloning template.`); // Log: Before template clone
@@ -64,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 // Check if elements were found
                 if (!voiceItemElement || !audioPlayer || !originalTranscriptionElement || !editedTranscription) {
-                     console.error(`fetchVoices: Skipping iteration ${index + 1} because a required element was not found in the template clone.`);
+                    console.error(`fetchVoices: Skipping iteration ${index + 1} because a required element was not found in the template clone.`);
                      return; // Skip this iteration
                 }
                  console.log(`fetchVoices: Iteration ${index + 1}: Elements queried successfully.`); // Log: After querySelector
@@ -96,14 +184,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 ratingGroups.forEach((group) => { // Removed index here as it's not needed
                     const radios = group.querySelectorAll('input[type="radio"]');
                     if (radios.length > 0) { // Check if radios exist before accessing name
-                         const baseName = radios[0].name;
-                         radios.forEach(radio => {
+                        const baseName = radios[0].name;
+                        radios.forEach(radio => {
                              // Make ID filename-safe for names - Ensure voice.id is a string
-                             const safeId = String(voice.id).replace(/[^a-zA-Z0-9]/g, '_');
-                             radio.name = `${baseName}-${safeId}`;
-                         });
+                            const safeId = String(voice.id).replace(/[^a-zA-Z0-9]/g, '_');
+                            radio.name = `${baseName}-${safeId}`;
+                        });
                     } else {
-                         console.warn(`fetchVoices: Iteration ${index + 1}: No radio buttons found in a rating group.`);
+                        console.warn(`fetchVoices: Iteration ${index + 1}: No radio buttons found in a rating group.`);
                     }
                 });
     
@@ -204,6 +292,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function handleSubmit(event) {
         event.preventDefault();
+        console.log("handleSubmit: Entered function, preventDefault called.");
+        if (!currentUser) {
+            setStatus('Error: Not logged in. Please refresh.', true);
+            return; // Should not happen if UI is controlled correctly
+    }
         clearStatus();
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
@@ -285,19 +378,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`handleSubmit (Gathering): Item ${index} - Values found:`, { noiseRating, naturalnessRating, pronunciationRating });
     
                 ratingsData.push({
-                    voice_id: voiceId, // Use original ID for DB
+                    voice_id: voiceId,
                     original_transcription: originalTranscription,
                     edited_transcription: editedTranscription.trim(),
                     noise_rating: parseInt(noiseRating, 10),
-                    naturalness_rating: parseInt(naturalnessRating, 10),
-                    pronunciation_rating: parseInt(pronunciationRating, 10)
+                    naturalness_rating: parseInt(naturalnessRatingInput.value, 10),
+                    pronunciation_rating: parseInt(pronunciationRatingInput.value, 10),
+                    username: currentUser
                 });
                 console.log(`handleSubmit (Gathering): Item ${index} pushed. ratingsData length now: ${ratingsData.length}`);
     
             } catch (error) {
-                console.error(`handleSubmit (Gathering): Error caught while processing item ${index} (ID: ${item.dataset.voiceId}):`, error);
-                setStatus(`Error processing ratings for voice #${index + 1}.`, true);
-                gatheringErrorOccurred = true; // Set flag to stop processing
+                console.error('handleSubmit: Error caught during submission fetch/processing:', error); // << ADD LOG HERE
+                setStatus(`Submission failed: ${error.message}`, true);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Ratings';
             }
         }); // End of Data Gathering Loop
         console.log(`handleSubmit: Finished data gathering loop. ratingsData length: ${ratingsData.length}. gatheringErrorOccurred = ${gatheringErrorOccurred}`);
@@ -346,7 +441,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
             setStatus(result.message || 'Ratings submitted successfully!', false);
             // Fetch new voices only on successful submission
-            await fetchVoices();
+            //await fetchVoices();
+            console.log("handleSubmit: Submission successful. fetchVoices() call SKIPPED for debugging.");
     
         } catch (error) {
             console.error('Error submitting ratings:', error);
@@ -355,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.textContent = 'Submit Ratings';
         }
         // Note: fetchVoices handles button state on successful submission/reload
-    
+        console.log("handleSubmit: Reached end of function execution.");
     } // End of handleSubmit function
 
         
@@ -375,9 +471,29 @@ document.addEventListener('DOMContentLoaded', () => {
         submitStatus.textContent = '';
         submitStatus.className = '';
     }
-
-
+    
     // --- Event Listeners ---
+    console.log("DOMContentLoaded: Attaching listeners (checking flags)...");
+
+    // login form listener
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+        console.log("Attached 'submit' listener to login form.");
+    } else {
+        console.error("ERROR: Login form not found!");
+    }
+
+    // logout button listener
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+        console.log("Attached 'click' listener to logout button.");
+    } else {
+        console.error("ERROR: Logout button not found!");
+    }
+
+        
+    
+
     if (form) { // Check if form exists before adding listener
         form.addEventListener('submit', handleSubmit);
         console.log("Attached 'submit' listener to form.");
@@ -395,5 +511,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("ERROR: Download DB button not found!");
     }
     // --- Initial Load ---
+    showLoginScreen();
     fetchVoices();
 });
