@@ -37,6 +37,8 @@ Then run server with:
 node server.js
 ```
 The default port for this is [3000](http://localhost:3000)
+### Huggingface
+This web app mainly require a Huggingface API for two things: To download the audio files, and to import the transcription.
 
 ## Database
 The output is in a db file called database.db which will automatically be generated if there are none in the directory.
@@ -72,6 +74,9 @@ Structured
 ## Dataset
 The current build uses data from [mozilla-foundation/common_voice_17_0](https://huggingface.co/datasets/mozilla-foundation/common_voice_17_0)
  Dataset, specifically Th/Test data. You can change the dataset by changing the `const DATASET_TSV_URL` in *server.js* and `const TAR_FILE_URL` in extract_audio.js
+
+### note
+Changing the dataset URL might also require significant changes to the parsing logic in `server.js` and the extraction logic in `extract_audio.js` if the new dataset has a different file structure or metadata format.
 
 # Author
 ---
