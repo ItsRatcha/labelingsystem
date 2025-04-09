@@ -5,52 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Labeling Tool</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-        <!-- Login Section (Initially Visible) -->
+    <!-- Login Section (Initially Visible) -->
     <div id="login-section" class="container login-container">
-        <h1>Login</h1>
+        <h1>Voice Labeling Tool</h1>
         <form id="login-form">
             <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" required>
+                <label for="username">Username</label>
+                <input type="text" id="username" required placeholder="Enter your username">
             </div>
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter your password">
             </div>
-            <button type="submit" id="login-btn">Login</button>
-            <div id="login-status" class="error"></div> <!-- For login errors -->
+            <button type="submit" id="login-btn">Sign In</button>
+            <div id="login-status" class="error"></div>
         </form>
     </div>
 
     <div id="main-content" class="container" style="display: none;">
-        <div class="user-info"> <!-- Area to show logged in user & logout -->
-            Logged in as: <span id="logged-in-username"></span> | <button id="logout-btn" type="button">Logout</button>
+        <div class="user-info">
+            Logged in as: <span id="logged-in-username"></span> <button id="logout-btn" type="button">Sign Out</button>
         </div>
+        
         <h1>Voice Labeling & Rating</h1>
-        <p>Listen to the voices, edit the transcriptions if needed, and rate them.</p>
-        <div id="loading">Loading voices...</div>
+        <p>Listen to the voice samples, edit transcriptions if needed, and provide quality ratings.</p>
+        
+        <div id="loading">Loading voice samples...</div>
+        
         <form id="labeling-form">
             <div id="voice-list">
                 <!-- Voice items will be loaded here by JavaScript -->
             </div>
-            <button type="submit" id="submit-btn">Submit Ratings</button>
+            <button type="submit" id="submit-btn">Submit All Ratings</button>
             <div id="submit-status"></div>
         </form>
 
         <hr class="section-separator">
-    <!-- Database Download Section -->
-    <div class="download-section">
-        <h2>Download Database</h2>
-        <div class="download-controls">
-            <label for="download-password">Admin Password:</label>
-            <input type="password" id="download-password" placeholder="Enter password">
-            <!-- Ensure this button does NOT have type="submit" -->
-            <button id="download-db-btn" type="button">Download DB File</button>
+        
+        <!-- Database Download Section -->
+        <div class="download-section">
+            <h2>Download Database</h2>
+            <div class="download-controls">
+                <label for="download-password">Admin Password</label>
+                <input type="password" id="download-password" placeholder="Enter admin password">
+                <button id="download-db-btn" type="button">Download DB</button>
+            </div>
+            <div id="download-status"></div>
         </div>
-        <div id="download-status"></div> <!-- To show success/error messages -->
     </div>
+
     <!-- Template for a single voice item (hidden, used by JS) -->
     <template id="voice-item-template">
         <div class="voice-item" data-voice-id="">
@@ -61,46 +69,163 @@
                 <label>Original Transcription:</label>
                 <p class="original-transcription"></p>
                 <label for="edited-transcription">Edit Transcription:</label>
-                <textarea class="edited-transcription" rows="3"></textarea>
+                <textarea class="edited-transcription" rows="3" placeholder="Edit the transcription if needed..."></textarea>
             </div>
 
             <div class="rating-section">
-                <h3>Rate this Voice (1=Worst, 5=Best)</h3>
+                <h3>Rate this Voice Sample</h3>
+                
+                <!-- Noise Rating -->
                 <div class="rating-group">
                     <label>Noise Level:</label>
+                    <div class="rating-slider-container">
+                        <input type="range" min="1" max="5" value="3" step="1" class="rating-slider" data-rating-type="noise">
+                        <span class="rating-value">3</span>
+                        <div class="value-labels">
+                            <span class="value-label">1</span>
+                            <span class="value-label">2</span>
+                            <span class="value-label">3</span>
+                            <span class="value-label">4</span>
+                            <span class="value-label">5</span>
+                        </div>
+                    </div>
+                    <!-- Hidden radio buttons to maintain form compatibility -->
                     <div class="rating-options">
-                        <label><input type="radio" name="noise-rating" value="1" required> 1</label>
-                        <label><input type="radio" name="noise-rating" value="2"> 2</label>
-                        <label><input type="radio" name="noise-rating" value="3"> 3</label>
-                        <label><input type="radio" name="noise-rating" value="4"> 4</label>
-                        <label><input type="radio" name="noise-rating" value="5"> 5</label>
+                        <input type="radio" name="noise-rating" value="1" required>
+                        <input type="radio" name="noise-rating" value="2">
+                        <input type="radio" name="noise-rating" value="3">
+                        <input type="radio" name="noise-rating" value="4">
+                        <input type="radio" name="noise-rating" value="5">
                     </div>
                 </div>
+                
+                <!-- Naturalness Rating -->
                 <div class="rating-group">
                     <label>Naturalness:</label>
+                    <div class="rating-slider-container">
+                        <input type="range" min="1" max="5" value="3" step="1" class="rating-slider" data-rating-type="naturalness">
+                        <span class="rating-value">3</span>
+                        <div class="value-labels">
+                            <span class="value-label">1</span>
+                            <span class="value-label">2</span>
+                            <span class="value-label">3</span>
+                            <span class="value-label">4</span>
+                            <span class="value-label">5</span>
+                        </div>
+                    </div>
+                    <!-- Hidden radio buttons to maintain form compatibility -->
                     <div class="rating-options">
-                        <label><input type="radio" name="naturalness-rating" value="1" required> 1</label>
-                        <label><input type="radio" name="naturalness-rating" value="2"> 2</label>
-                        <label><input type="radio" name="naturalness-rating" value="3"> 3</label>
-                        <label><input type="radio" name="naturalness-rating" value="4"> 4</label>
-                        <label><input type="radio" name="naturalness-rating" value="5"> 5</label>
+                        <input type="radio" name="naturalness-rating" value="1" required>
+                        <input type="radio" name="naturalness-rating" value="2">
+                        <input type="radio" name="naturalness-rating" value="3">
+                        <input type="radio" name="naturalness-rating" value="4">
+                        <input type="radio" name="naturalness-rating" value="5">
                     </div>
                 </div>
+                
+                <!-- Pronunciation Rating -->
                 <div class="rating-group">
                     <label>Pronunciation:</label>
+                    <div class="rating-slider-container">
+                        <input type="range" min="1" max="5" value="3" step="1" class="rating-slider" data-rating-type="pronunciation">
+                        <span class="rating-value">3</span>
+                        <div class="value-labels">
+                            <span class="value-label">1</span>
+                            <span class="value-label">2</span>
+                            <span class="value-label">3</span>
+                            <span class="value-label">4</span>
+                            <span class="value-label">5</span>
+                        </div>
+                    </div>
+                    <!-- Hidden radio buttons to maintain form compatibility -->
                     <div class="rating-options">
-                        <label><input type="radio" name="pronunciation-rating" value="1" required> 1</label>
-                        <label><input type="radio" name="pronunciation-rating" value="2"> 2</label>
-                        <label><input type="radio" name="pronunciation-rating" value="3"> 3</label>
-                        <label><input type="radio" name="pronunciation-rating" value="4"> 4</label>
-                        <label><input type="radio" name="pronunciation-rating" value="5"> 5</label>
+                        <input type="radio" name="pronunciation-rating" value="1" required>
+                        <input type="radio" name="pronunciation-rating" value="2">
+                        <input type="radio" name="pronunciation-rating" value="3">
+                        <input type="radio" name="pronunciation-rating" value="4">
+                        <input type="radio" name="pronunciation-rating" value="5">
                     </div>
                 </div>
             </div>
             <hr class="item-separator">
-            </div>
         </div>
     </template>
+
+    <script>
+        // Slider interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to initialize sliders for a specific voice item
+            function initializeSliders(voiceItem) {
+                const sliders = voiceItem.querySelectorAll('.rating-slider');
+                
+                sliders.forEach(slider => {
+                    const valueDisplay = slider.nextElementSibling;
+                    const ratingType = slider.dataset.ratingType;
+                    const radioButtons = voiceItem.querySelectorAll(`input[name="${ratingType}-rating"]`);
+                    
+                    // Set initial value
+                    valueDisplay.textContent = slider.value;
+                    
+                    // Update radio buttons based on slider value
+                    const updateRadioButton = (value) => {
+                        radioButtons.forEach(radio => {
+                            if (radio.value === value) {
+                                radio.checked = true;
+                            }
+                        });
+                    };
+                    
+                    // Initialize radio button
+                    updateRadioButton(slider.value);
+                    
+                    // Update on slider change
+                    slider.addEventListener('input', function() {
+                        valueDisplay.textContent = this.value;
+                        valueDisplay.classList.add('active');
+                        updateRadioButton(this.value);
+                    });
+                    
+                    // Show/hide value display
+                    slider.addEventListener('mouseenter', () => {
+                        valueDisplay.classList.add('active');
+                    });
+                    
+                    slider.addEventListener('mouseleave', () => {
+                        setTimeout(() => {
+                            if (!slider.matches(':active')) {
+                                valueDisplay.classList.remove('active');
+                            }
+                        }, 1000);
+                    });
+                });
+            }
+            
+            // If you have a function that adds voice items to the page,
+            // call initializeSliders(newVoiceItem) after each item is added
+            
+            // For demonstration purposes, let's observe DOM changes to detect when items are added
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.addedNodes.length) {
+                        mutation.addedNodes.forEach((node) => {
+                            if (node.classList && node.classList.contains('voice-item')) {
+                                initializeSliders(node);
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Start observing once the voice list container is available
+            const voiceList = document.getElementById('voice-list');
+            if (voiceList) {
+                observer.observe(voiceList, { childList: true, subtree: true });
+            }
+            
+            // Note: You'll need to modify your existing JavaScript that loads voice items
+            // to work with this new slider implementation
+        });
+    </script>
 
     <script src="script.js"></script>
 </body>

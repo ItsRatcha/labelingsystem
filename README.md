@@ -11,7 +11,7 @@ This is my personal and very beginner takes on Labeling System. This web app wil
 - Require user to have an account before ranking.
 ### Incoming
 - [ ] Add flags or comment system.
-- [ ] Full on rework on UX/UI.
+- [x] Full on rework on UX/UI.
 - [ ] Sentence Sense checker.
 - [ ] Homophones suggestion.
 
