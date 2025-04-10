@@ -2,7 +2,7 @@ import express from 'express';
 import sqlite3 from 'sqlite3';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { fetch } from 'undici'; // Use undici's fetch for reliable fetching, especially in older Node versions. Or use global fetch if on Node 18+
+import { fetch } from 'undici';
 import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -16,11 +16,24 @@ const DATABASE_FILE = path.resolve(__dirname, 'database.db');
 // URL to the specific TSV file on Hugging Face Hub
 const DATASET_TSV_URL = 'https://huggingface.co/datasets/mozilla-foundation/common_voice_17_0/resolve/main/transcript/th/test.tsv?download=true';
 const NUM_SAMPLES = 5; // Number of voices to fetch at a time
-const ADMIN_PASSWORD = 'admin123'; // <<< YOUR ADMIN PASSWORD - VERY INSECURE!
+const ADMIN_PASSWORD = 'admin123'; // <<< YOUR ADMIN PASSWORD
+const USERS_FILE_PATH = path.resolve(__dirname, 'users.json');
+let validUsers = {};
 
 console.log(`[Server Startup] Checking DB path. __dirname: ${__dirname}`);
 console.log(`[Server Startup] Absolute path for DATABASE_FILE resolved to: ${DATABASE_FILE}`);
 
+try {
+    console.log(`[Server Startup] Attempting to load users from: ${USERS_FILE_PATH}`); // Read file synchronously during startup
+    const usersJsonData = fs.readFileSync(USERS_FILE_PATH, 'utf-8'); // Parse JSON data
+    validUsers = JSON.parse(usersJsonData);
+    console.log(`[Server Startup] Successfully loaded ${Object.keys(validUsers).length} users from users.json`);
+} catch (error) {
+    console.error(`[Server Startup] FAILED to load or parse users.json from ${USERS_FILE_PATH}`);
+    console.error("Error details:", error.message);
+    console.error("CRITICAL: Server may not handle logins correctly. Please ensure users.json exists and is valid.");
+    process.exit(1); // Force exit on error
+}
 // --- Database Setup ---
 const verboseSqlite3 = sqlite3.verbose();
 const db = new verboseSqlite3.Database(DATABASE_FILE, (err) => {
@@ -46,8 +59,6 @@ const db = new verboseSqlite3.Database(DATABASE_FILE, (err) => {
     }
 });
 
-const VALID_USERNAME = 'admin';
-const VALID_PASSWORD = 'admin123';
 
 
 // --- Middleware ---
@@ -142,7 +153,7 @@ app.post('/api/login', (req, res) => {
     console.log(`[/api/login] Received login attempt for user: ${username}`);
 
     // --- BASIC (INSECURE) VALIDATION ---
-    if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+    if (validUsers[username] === password) {
         console.log(`[/api/login] Login successful for user: ${username}`);
         // Send success response with username
         res.status(200).json({ success: true, username: username });

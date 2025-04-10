@@ -102,10 +102,64 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadStatus.textContent = '';
     }
 
+        // Function to Initialize sliders for a voice item ---
+    function initializeSlidersForItem(voiceItemElement, safeVoiceId) {
+        const sliders = voiceItemElement.querySelectorAll('.rating-slider');
 
+        sliders.forEach(slider => {
+            const container = slider.closest('.rating-slider-container'); // Find parent container
+            const valueDisplay = container?.querySelector('.rating-value');
+            const ratingType = slider.dataset.ratingType; // e.g., 'noise'
+            // Construct the CORRECT dynamic radio button name base
+            const baseRadioName = `${ratingType}-rating-${safeVoiceId}`;
+
+            // Function to update display and check the correct radio button
+            const updateRating = (value) => {
+                if (valueDisplay) {
+                    valueDisplay.textContent = value;
+                }
+                // Find the specific radio button with the correct dynamic name AND value
+                const radioToCheck = voiceItemElement.querySelector(`input[name="${baseRadioName}"][value="${value}"]`);
+                if (radioToCheck) {
+                    radioToCheck.checked = true;
+                    // console.log(`Checked radio: name=${baseRadioName}, value=${value}`); // Debug log
+                } else {
+                    // console.warn(`Could not find radio: name=${baseRadioName}, value=${value}`); // Debug log
+                }
+            };
+
+            // Initial setup
+            updateRating(slider.value);
+            if(valueDisplay) valueDisplay.textContent = slider.value; // Ensure display matches initial value
+
+            // Listener for slider input
+            slider.addEventListener('input', function() {
+                updateRating(this.value);
+                if (valueDisplay) valueDisplay.classList.add('active'); // Show value on interaction
+            });
+
+            // Optional: Show/hide value display on hover (keep if you like the effect)
+            if (valueDisplay) {
+                slider.addEventListener('mouseenter', () => valueDisplay.classList.add('active'));
+                slider.addEventListener('mouseleave', () => {
+                     // Small delay to allow thumb interaction
+                    setTimeout(() => {
+                        // Check if slider is still being actively dragged
+                        if (!slider.matches(':active')) {
+                            valueDisplay.classList.remove('active');
+                        }
+                    }, 300);
+                });
+                 // Keep display active while dragging
+                slider.addEventListener('mousedown', () => valueDisplay.classList.add('active'));
+                slider.addEventListener('mouseup', () => valueDisplay.classList.remove('active'));
+
+            }
+        });
+    }
     // Function to fetch voices from the backend
     async function fetchVoices() {
-        console.log("fetchVoices: Starting..."); // Log: Function start
+        console.log("fetchVoices: Starting...");
         showLoading(true);
         clearStatus();
         voiceList.innerHTML = '';
@@ -138,7 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error(`fetchVoices: Skipping iteration ${index + 1} due to missing data:`, voice);
                      return; // Skip this iteration
                 }
-    
+
+                const safeVoiceId = String(voice.id).replace(/[^a-zA-Z0-9]/g, '_');
+                console.log(`fetchVoices: Iteration ${index + 1}: Safe ID = ${safeVoiceId}`);
     
                 console.log(`fetchVoices: Iteration ${index + 1}: Cloning template.`); // Log: Before template clone
                 const templateClone = voiceItemTemplate.content.cloneNode(true);
@@ -194,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.warn(`fetchVoices: Iteration ${index + 1}: No radio buttons found in a rating group.`);
                     }
                 });
-    
+                initializeSlidersForItem(voiceItemElement, safeVoiceId);
                 console.log(`fetchVoices: Iteration ${index + 1}: Appending item to voiceList.`); // Log: Before appendChild
                 voiceList.appendChild(templateClone);
                 console.log(`fetchVoices: Finished loop iteration ${index + 1}`); // Log: Loop iteration end
