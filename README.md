@@ -14,7 +14,7 @@ This is my personal and very beginner takes on Labeling System. This web app wil
 - [x] Full on rework on UX/UI.
 - [ ] Sentence Sense checker.
 - [ ] Homophones suggestion.
-- [x] [Login system.](### Logging in)
+- [x] [Login system.](###Logging in)
 
 ## Installation
 ```
