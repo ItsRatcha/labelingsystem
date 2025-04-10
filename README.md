@@ -1,13 +1,13 @@
 >Action is the foundational key to all success.
 > — Pablo Picasso
 # LabelingSystem
-This is my personal and very beginner takes on Labeling System. This web app will allow user to edit and rank 5 random voices from [[mozilla-foundation/common_voice_17_0]] Dataset, specifically Th/Test data.
+This is my personal and very beginner takes on Labeling System. This web app will allow user to edit and rank 5 random voices from [mozilla-foundation/common_voice_17_0](huggingface.co/datasets/mozilla-foundation/common_voice_17_0) Dataset, specifically Th/Test data.
 *Built with Node.js and Vanilla HTML/CSS*
 
 ## Features
 - Rate the voices on their pronunciation, naturalness, and noise level.
-- Edit the transcription if you think they don't match.
-- Download the database db on the site with password protection.
+- Edit the transcription if user thinks they don't match.
+- Download the database file on the site with password protection.
 - Require user to have an account before ranking.
 ### Incoming
 - [ ] Add flags or comment system.
@@ -37,13 +37,13 @@ Then run server with:
 ```
 node server.js
 ```
-The default port for this is [3000](http://localhost:3000). This can be changed on the line 12 of server.js
+The default port for this is [3000](http://localhost:3000). This can be changed on the line 12 of [server.js](server.js)
 
 ### Logging in
 You can edit the username and password of anyone in users.json this is an insecure way to store password. But for this beginner project, it is sufficient enough.
 
 ## Database
-The output is in a db file called database.db which will automatically be generated if there are none in the directory. The download database button will be at the bottom of the page. The default password is `admin123` which can be changed on line 19 of server.js 
+The output is in a db file called database.db which will automatically be generated if there are none in the directory. The download database button will be at the bottom of the page. The default password is `admin123` which can be changed on line 19 of [server.js](server.js)
 ### Data type
 Structured
 ### Data Fields
@@ -74,13 +74,12 @@ Structured
 ```
 
 ## Dataset
-The current build uses data from [mozilla-foundation/common_voice_17_0](https://huggingface.co/datasets/mozilla-foundation/common_voice_17_0)
- Dataset, specifically Th/Test data. You can change the dataset by changing the `const DATASET_TSV_URL` in *server.js* and `const TAR_FILE_URL` in extract_audio.js
+The current build uses data from [mozilla-foundation/common_voice_17_0](https://huggingface.co/datasets/mozilla-foundation/common_voice_17_0) Dataset, specifically Th/Test data. Note that the dataset is hardcoded into the server.js and might require multiple changes. However, changing the subset (ie. to En/Test) on require changing `const DATASET_TSV_URL` in [server.js](server.js) and `const TAR_FILE_URL` in [extract_audio.js](extract_audio.js)
 
 # Author
 ---
 Made by Ratchanon Moungwichean
-Bachelor Student in Computer Engineer at Thammasat University
+Undergraduate Student in Computer Engineer at Thammasat University
 Email: RatchaM.work@gmail.com
 
 ## License
